@@ -1,11 +1,9 @@
 import Sidebar from "@/components/ui/sidebar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
 
 export default function Settings() {
+  const [activeTab, setActiveTab] = useState("account");
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <Sidebar />
@@ -16,36 +14,81 @@ export default function Settings() {
         </div>
         
         <div className="bg-white rounded-lg shadow">
-          <Tabs defaultValue="account">
-            <div className="border-b px-6 py-3">
-              <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-4 md:grid-cols-5 gap-2">
-                <TabsTrigger value="account">Account</TabsTrigger>
-                <TabsTrigger value="store">Store</TabsTrigger>
-                <TabsTrigger value="payment">Payment</TabsTrigger>
-                <TabsTrigger value="notification">Notifications</TabsTrigger>
-                <TabsTrigger value="security" className="hidden md:block">Security</TabsTrigger>
-              </TabsList>
+          {/* Custom tabs navigation */}
+          <div className="border-b px-6 py-3">
+            <div className="grid w-full md:w-auto md:inline-grid grid-cols-4 md:grid-cols-5 gap-2">
+              <button 
+                onClick={() => setActiveTab("account")}
+                className={`py-2 px-4 rounded-md ${activeTab === "account" ? "bg-blue-100 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                Account
+              </button>
+              <button 
+                onClick={() => setActiveTab("store")}
+                className={`py-2 px-4 rounded-md ${activeTab === "store" ? "bg-blue-100 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                Store
+              </button>
+              <button 
+                onClick={() => setActiveTab("payment")}
+                className={`py-2 px-4 rounded-md ${activeTab === "payment" ? "bg-blue-100 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                Payment
+              </button>
+              <button 
+                onClick={() => setActiveTab("notification")}
+                className={`py-2 px-4 rounded-md ${activeTab === "notification" ? "bg-blue-100 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                Notifications
+              </button>
+              <button 
+                onClick={() => setActiveTab("security")}
+                className={`py-2 px-4 rounded-md hidden md:block ${activeTab === "security" ? "bg-blue-100 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100"}`}
+              >
+                Security
+              </button>
             </div>
-            
-            <TabsContent value="account" className="p-6">
+          </div>
+          
+          {/* Account tab content */}
+          {activeTab === "account" && (
+            <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" value="John Smith" className="mt-1" />
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                    <input 
+                      id="name" 
+                      type="text" 
+                      defaultValue="John Smith" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value="john@example.com" className="mt-1" />
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                    <input 
+                      id="email" 
+                      type="email" 
+                      defaultValue="john@example.com" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" value="+1 234-567-8901" className="mt-1" />
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+                    <input 
+                      id="phone" 
+                      type="text" 
+                      defaultValue="+1 234-567-8901" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="role">Role</Label>
-                    <select id="role" className="mt-1 w-full p-2 border rounded-md">
+                    <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                    <select 
+                      id="role" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
                       <option>Administrator</option>
                       <option>Manager</option>
                       <option>Staff</option>
@@ -54,33 +97,51 @@ export default function Settings() {
                 </div>
                 
                 <div>
-                  <Label htmlFor="bio">Bio</Label>
+                  <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Bio</label>
                   <textarea 
                     id="bio" 
-                    className="mt-1 w-full p-2 border rounded-md h-24"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 h-24"
                     placeholder="Tell us about yourself"
                   ></textarea>
                 </div>
                 
-                <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                  Save Changes
+                </button>
               </div>
-            </TabsContent>
-            
-            <TabsContent value="store" className="p-6">
+            </div>
+          )}
+          
+          {/* Store tab content */}
+          {activeTab === "store" && (
+            <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Store Settings</h2>
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="store-name">Store Name</Label>
-                    <Input id="store-name" value="My Awesome Store" className="mt-1" />
+                    <label htmlFor="store-name" className="block text-sm font-medium text-gray-700">Store Name</label>
+                    <input 
+                      id="store-name" 
+                      type="text" 
+                      defaultValue="My Awesome Store" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="store-url">Store URL</Label>
-                    <Input id="store-url" value="https://mystore.com" className="mt-1" />
+                    <label htmlFor="store-url" className="block text-sm font-medium text-gray-700">Store URL</label>
+                    <input 
+                      id="store-url" 
+                      type="text" 
+                      defaultValue="https://mystore.com" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="store-currency">Currency</Label>
-                    <select id="store-currency" className="mt-1 w-full p-2 border rounded-md">
+                    <label htmlFor="store-currency" className="block text-sm font-medium text-gray-700">Currency</label>
+                    <select 
+                      id="store-currency" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
                       <option>USD ($)</option>
                       <option>EUR (€)</option>
                       <option>GBP (£)</option>
@@ -88,8 +149,11 @@ export default function Settings() {
                     </select>
                   </div>
                   <div>
-                    <Label htmlFor="timezone">Timezone</Label>
-                    <select id="timezone" className="mt-1 w-full p-2 border rounded-md">
+                    <label htmlFor="timezone" className="block text-sm font-medium text-gray-700">Timezone</label>
+                    <select 
+                      id="timezone" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
                       <option>Pacific Time (PT)</option>
                       <option>Mountain Time (MT)</option>
                       <option>Central Time (CT)</option>
@@ -99,22 +163,29 @@ export default function Settings() {
                 </div>
                 
                 <div>
-                  <Label>Store Logo</Label>
+                  <label className="block text-sm font-medium text-gray-700">Store Logo</label>
                   <div className="mt-1 flex items-center space-x-4">
                     <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <Button variant="outline">Upload New Logo</Button>
+                    <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                      Upload New Logo
+                    </button>
                   </div>
                 </div>
                 
-                <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                  Save Changes
+                </button>
               </div>
-            </TabsContent>
-            
-            <TabsContent value="payment" className="p-6">
+            </div>
+          )}
+          
+          {/* Payment tab content */}
+          {activeTab === "payment" && (
+            <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Payment Settings</h2>
               <div className="space-y-6">
                 <div className="border rounded-md p-4">
@@ -130,7 +201,10 @@ export default function Settings() {
                         <p className="text-sm text-gray-500">Accept Visa, Mastercard, Amex</p>
                       </div>
                     </div>
-                    <Switch checked={true} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
                 
@@ -147,7 +221,10 @@ export default function Settings() {
                         <p className="text-sm text-gray-500">Accept PayPal payments</p>
                       </div>
                     </div>
-                    <Switch checked={false} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
                 
@@ -164,15 +241,23 @@ export default function Settings() {
                         <p className="text-sm text-gray-500">Accept payments via Stripe</p>
                       </div>
                     </div>
-                    <Switch checked={true} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
                 
-                <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                  Save Changes
+                </button>
               </div>
-            </TabsContent>
-            
-            <TabsContent value="notification" className="p-6">
+            </div>
+          )}
+          
+          {/* Notifications tab content */}
+          {activeTab === "notification" && (
+            <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Notification Settings</h2>
               <div className="space-y-6">
                 <div className="space-y-4">
@@ -181,7 +266,10 @@ export default function Settings() {
                       <h3 className="font-medium">Order Confirmations</h3>
                       <p className="text-sm text-gray-500">Receive notifications when a new order is placed</p>
                     </div>
-                    <Switch checked={true} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -189,7 +277,10 @@ export default function Settings() {
                       <h3 className="font-medium">Low Stock Alerts</h3>
                       <p className="text-sm text-gray-500">Get notified when products are running low</p>
                     </div>
-                    <Switch checked={true} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -197,7 +288,10 @@ export default function Settings() {
                       <h3 className="font-medium">Customer Reviews</h3>
                       <p className="text-sm text-gray-500">Receive notifications for new product reviews</p>
                     </div>
-                    <Switch checked={false} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -205,30 +299,50 @@ export default function Settings() {
                       <h3 className="font-medium">Marketing Updates</h3>
                       <p className="text-sm text-gray-500">Receive newsletters and promotional materials</p>
                     </div>
-                    <Switch checked={false} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
                 
-                <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                  Save Changes
+                </button>
               </div>
-            </TabsContent>
-            
-            <TabsContent value="security" className="p-6">
+            </div>
+          )}
+          
+          {/* Security tab content */}
+          {activeTab === "security" && (
+            <div className="p-6">
               <h2 className="text-xl font-semibold mb-4">Security Settings</h2>
               <div className="space-y-6">
                 <div className="space-y-3">
                   <h3 className="font-medium">Change Password</h3>
                   <div>
-                    <Label htmlFor="current-password">Current Password</Label>
-                    <Input id="current-password" type="password" className="mt-1" />
+                    <label htmlFor="current-password" className="block text-sm font-medium text-gray-700">Current Password</label>
+                    <input 
+                      id="current-password" 
+                      type="password" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="new-password">New Password</Label>
-                    <Input id="new-password" type="password" className="mt-1" />
+                    <label htmlFor="new-password" className="block text-sm font-medium text-gray-700">New Password</label>
+                    <input 
+                      id="new-password" 
+                      type="password" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="confirm-password">Confirm New Password</Label>
-                    <Input id="confirm-password" type="password" className="mt-1" />
+                    <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <input 
+                      id="confirm-password" 
+                      type="password" 
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    />
                   </div>
                 </div>
                 
@@ -238,14 +352,19 @@ export default function Settings() {
                     <div>
                       <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
                     </div>
-                    <Switch checked={false} />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
                   </div>
                 </div>
                 
-                <Button className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                  Save Changes
+                </button>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          )}
         </div>
       </main>
     </div>
