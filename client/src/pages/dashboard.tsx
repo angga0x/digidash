@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useWebSocketData } from "@/hooks/use-websocket-data";
 import Sidebar from "@/components/ui/sidebar";
 import StatsCard from "@/components/ui/stats-card";
 import ChartContainer from "@/components/ui/chart-container";
@@ -35,25 +36,45 @@ export default function Dashboard() {
   const [transactionTimeRange, setTransactionTimeRange] = useState<TimeRange>("week");
   const [categoryTimeRange, setCategoryTimeRange] = useState<TimeRange>("week");
 
-  // Fetch sales statistics
+  // Use WebSocket data when available (for real-time updates)
+  const { 
+    data: wsData, 
+    loading: wsLoading, 
+    error: wsError 
+  } = useWebSocketData();
+
+  // Fallback to regular REST API if WebSocket is not available
   const { data: salesStats, isLoading: isLoadingSales } = useQuery({
     queryKey: ['/api/stats/sales'],
+    enabled: !wsData || !wsData.salesStats, // Only run if WebSocket data is not available
   });
 
-  // Fetch user statistics
   const { data: userStats, isLoading: isLoadingUsers } = useQuery({
     queryKey: ['/api/stats/users'],
+    enabled: !wsData || !wsData.userStats,
   });
 
-  // Fetch product statistics
   const { data: productStats, isLoading: isLoadingProducts } = useQuery({
     queryKey: ['/api/stats/products'],
+    enabled: !wsData || !wsData.productStats,
   });
 
-  // Fetch transaction statistics
   const { data: transactionStats, isLoading: isLoadingTransactions } = useQuery({
     queryKey: ['/api/stats/transactions'],
+    enabled: !wsData || !wsData.transactionStats,
   });
+
+  // Use WebSocket data or fallback to REST API data
+  const salesData = wsData?.salesStats || salesStats;
+  const userData = wsData?.userStats || userStats;
+  const productsData = wsData?.productStats || productStats;
+  const transactionsData = wsData?.transactionStats || transactionStats;
+  
+  // Determine loading state (either WS is loading or REST API is loading and WS data is not available)
+  const isSalesLoading = wsLoading || (isLoadingSales && !wsData?.salesStats);
+  const isUsersLoading = wsLoading || (isLoadingUsers && !wsData?.userStats);
+  const isProductsLoading = wsLoading || (isLoadingProducts && !wsData?.productStats);
+  const isTransactionsLoading = wsLoading || (isLoadingTransactions && !wsData?.transactionStats);
 
   // Chart colors
   const COLORS = ['#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#6B7280'];
@@ -95,7 +116,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
               <StatsCard
                 title="Total Transactions"
-                value={isLoadingSales ? "Loading..." : salesStats?.totalTransactions.toLocaleString()}
+                value={isSalesLoading ? "Loading..." : salesData?.totalTransactions.toLocaleString()}
                 icon={<TrendingUpIcon className="h-8 w-8 text-primary" />}
                 iconBgClass="bg-blue-50"
                 borderClass="border-primary"
@@ -104,7 +125,7 @@ export default function Dashboard() {
               
               <StatsCard
                 title="Total Revenue"
-                value={isLoadingSales ? "Loading..." : formatCurrency(salesStats?.totalRevenue)}
+                value={isSalesLoading ? "Loading..." : formatCurrency(salesData?.totalRevenue)}
                 icon={<BanknoteIcon className="h-8 w-8 text-secondary" />}
                 iconBgClass="bg-green-50"
                 borderClass="border-secondary"
@@ -113,7 +134,7 @@ export default function Dashboard() {
               
               <StatsCard
                 title="Total Profit"
-                value={isLoadingSales ? "Loading..." : formatCurrency(salesStats?.totalProfit)}
+                value={isSalesLoading ? "Loading..." : formatCurrency(salesData?.totalProfit)}
                 icon={<ChartBar className="h-8 w-8 text-warning" />}
                 iconBgClass="bg-yellow-50"
                 borderClass="border-warning"
@@ -149,14 +170,14 @@ export default function Dashboard() {
                 </div>
               }
             >
-              {isLoadingTransactions ? (
+              {isTransactionsLoading ? (
                 <div className="h-80 flex items-center justify-center">
                   <p>Loading chart data...</p>
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height={320}>
                   <LineChart
-                    data={transactionStats?.dailyTransactions}
+                    data={transactionsData?.dailyTransactions}
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(200, 200, 200, 0.3)" />
@@ -202,7 +223,7 @@ export default function Dashboard() {
                 </div>
               }
             >
-              {isLoadingTransactions ? (
+              {isTransactionsLoading ? (
                 <div className="h-80 flex items-center justify-center">
                   <p>Loading chart data...</p>
                 </div>
@@ -210,7 +231,7 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
-                      data={transactionStats?.categoryDistribution}
+                      data={transactionsData?.categoryDistribution}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -220,7 +241,7 @@ export default function Dashboard() {
                       dataKey="count"
                       nameKey="category"
                     >
-                      {transactionStats?.categoryDistribution.map((entry, index) => (
+                      {transactionsData?.categoryDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -246,7 +267,7 @@ export default function Dashboard() {
                   <div className="flex justify-between mb-2">
                     <p className="text-sm font-medium text-gray-500">Total Active Users</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {isLoadingUsers ? "Loading..." : userStats?.totalActiveUsers.toLocaleString()}
+                      {isUsersLoading ? "Loading..." : userData?.totalActiveUsers.toLocaleString()}
                     </p>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -257,7 +278,7 @@ export default function Dashboard() {
                   <div className="flex justify-between mb-2">
                     <p className="text-sm font-medium text-gray-500">Average Balance</p>
                     <p className="text-sm font-medium text-gray-900">
-                      {isLoadingUsers ? "Loading..." : formatCurrency(userStats?.averageBalance)}
+                      {isUsersLoading ? "Loading..." : formatCurrency(userData?.averageBalance)}
                     </p>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -283,10 +304,10 @@ export default function Dashboard() {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-4">Best Selling Products</h3>
               <div className="space-y-4">
-                {isLoadingProducts ? (
+                {isProductsLoading ? (
                   <p>Loading best selling products...</p>
                 ) : (
-                  productStats?.bestSelling.map((item, index) => (
+                  productsData?.bestSelling.map((item, index) => (
                     <ProductItem
                       key={item.product.id}
                       name={item.product.name}
@@ -302,10 +323,10 @@ export default function Dashboard() {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-700 mb-4">Low Stock Products</h3>
               <div className="space-y-4">
-                {isLoadingProducts ? (
+                {isProductsLoading ? (
                   <p>Loading low stock products...</p>
                 ) : (
-                  productStats?.lowStock.map(product => (
+                  productsData?.lowStock.map(product => (
                     <LowStockItem
                       key={product.id}
                       name={product.name}
@@ -336,12 +357,12 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {isLoadingProducts ? (
+                  {isProductsLoading ? (
                     <tr>
                       <td colSpan={6} className="py-4 px-6 text-center">Loading profitable products...</td>
                     </tr>
                   ) : (
-                    productStats?.mostProfitable.map(item => (
+                    productsData?.mostProfitable.map(item => (
                       <tr key={item.product.id} className="hover:bg-gray-50">
                         <td className="py-4 px-6 whitespace-nowrap">
                           <div className="flex items-center">

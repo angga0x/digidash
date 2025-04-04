@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -68,6 +69,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // Create WebSocket server
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store connected clients
+  const clients = new Set<WebSocket>();
+
+  // Handle WebSocket connections
+  wss.on('connection', (ws) => {
+    // Add the new client to our set
+    clients.add(ws);
+    
+    console.log('WebSocket client connected, total clients:', clients.size);
+    
+    // Send initial data to the client
+    sendDashboardData(ws);
+    
+    // Handle disconnections
+    ws.on('close', () => {
+      clients.delete(ws);
+      console.log('WebSocket client disconnected, remaining clients:', clients.size);
+    });
+    
+    // Handle incoming messages
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        
+        // Handle different message types
+        if (data.type === 'getDashboardData') {
+          sendDashboardData(ws);
+        }
+      } catch (error) {
+        console.error('Error handling WebSocket message:', error);
+      }
+    });
+  });
+  
+  // Function to send dashboard data to a client
+  async function sendDashboardData(client: WebSocket) {
+    if (client.readyState === WebSocket.OPEN) {
+      try {
+        // Gather all the dashboard data
+        const [salesStats, userStats, productStats, transactionStats] = await Promise.all([
+          storage.getSalesStats(),
+          storage.getUserStats(),
+          storage.getProductStats(),
+          storage.getTransactionStats()
+        ]);
+        
+        // Send the data to the client
+        client.send(JSON.stringify({
+          type: 'dashboardData',
+          data: {
+            salesStats,
+            userStats,
+            productStats,
+            transactionStats
+          }
+        }));
+      } catch (error) {
+        console.error('Error sending dashboard data:', error);
+      }
+    }
+  }
+  
+  // Function to broadcast data to all connected clients
+  function broadcastDashboardData() {
+    clients.forEach(client => {
+      sendDashboardData(client);
+    });
+  }
+  
+  // Set up interval to broadcast updated data to all clients every 30 seconds
+  setInterval(broadcastDashboardData, 30000);
 
   return httpServer;
 }

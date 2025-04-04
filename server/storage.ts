@@ -1,7 +1,7 @@
 import { 
-  users, type User, type InsertUser,
-  products, type Product, type InsertProduct,
-  transactions, type Transaction, type InsertTransaction,
+  type User, type InsertUser,
+  type Product, type InsertProduct,
+  type Transaction, type InsertTransaction,
   type SalesStats, type UserStats, type ProductStats, type TransactionStats
 } from "@shared/schema";
 
@@ -350,4 +350,8 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Import the DatabaseStorage implementation from separate file to avoid all the LSP errors
+import { DatabaseStorage } from './dbstorage';
+
+// Use DatabaseStorage instead of MemStorage for a real database implementation
+export const storage = new DatabaseStorage();
