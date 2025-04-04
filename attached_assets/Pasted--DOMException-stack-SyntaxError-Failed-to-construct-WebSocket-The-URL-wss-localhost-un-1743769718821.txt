@@ -1,0 +1,40 @@
+
+DOMException {}
+stack: "SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=6Bdgs5Aq8alR' is invalid.↵ at new t (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:218737)↵ at setupWebSocket (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@vite/client:536:19)↵ at fallback (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@vite/client:509:16)↵ at WebSocket.<anonymous> (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@vite/client:555:7)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: DOMException
+
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at a
+    at https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:337:18
+    at nav
+    at div
+    at div
+    at Sidebar (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/src/components/ui/sidebar.tsx:31:51)
+    at div
+    at Dashboard (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/src/pages/dashboard.tsx:49:59)
+    at Route (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:323:16)
+    at Switch (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:379:17)
+    at Router
+    at QueryClientProvider (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=64e8e3b9:2805:3)
+    at App
+at a
+at a
+at https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:337:18
+at nav
+at div
+at div
+at Sidebar (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/src/components/ui/sidebar.tsx:31:51)
+at div
+at Dashboard (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/src/pages/dashboard.tsx:49:59)
+at Route (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:323:16)
+at Switch (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=64e8e3b9:379:17)
+at Router
+at QueryClientProvider (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=64e8e3b9:2805:3)
+at App
+at t.value (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://6027036d-cb12-4685-bc62-f6782c3b26b7-00-jamqn395my0s.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

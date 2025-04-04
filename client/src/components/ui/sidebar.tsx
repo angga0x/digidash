@@ -1,21 +1,32 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import {
   LayoutDashboardIcon,
   PackageIcon,
   ClipboardListIcon, 
   UsersIcon,
-  ChartBar,
+  BarChart3Icon,
   SettingsIcon,
   MenuIcon
 } from "lucide-react";
 
 export default function Sidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [location] = useLocation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  // Menu items configuration
+  const menuItems = [
+    { path: "/", label: "Dashboard", icon: LayoutDashboardIcon },
+    { path: "/products", label: "Products", icon: PackageIcon },
+    { path: "/orders", label: "Orders", icon: ClipboardListIcon },
+    { path: "/customers", label: "Customers", icon: UsersIcon },
+    { path: "/reports", label: "Reports", icon: BarChart3Icon },
+    { path: "/settings", label: "Settings", icon: SettingsIcon },
+  ];
 
   return (
     <div className="bg-[#1F2937] text-white md:w-64 w-full md:min-h-screen">
@@ -32,32 +43,24 @@ export default function Sidebar() {
       </div>
       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:block`}>
         <nav className="py-4">
-          <Link href="/">
-            <a className="flex items-center px-4 py-3 bg-[#111827] text-white border-l-4 border-[#3B82F6]">
-              <LayoutDashboardIcon className="h-5 w-5 mr-3" />
-              Dashboard
-            </a>
-          </Link>
-          <a href="#" className="flex items-center px-4 py-3 text-gray-300 hover:bg-[#111827] hover:text-white">
-            <PackageIcon className="h-5 w-5 mr-3" />
-            Products
-          </a>
-          <a href="#" className="flex items-center px-4 py-3 text-gray-300 hover:bg-[#111827] hover:text-white">
-            <ClipboardListIcon className="h-5 w-5 mr-3" />
-            Orders
-          </a>
-          <a href="#" className="flex items-center px-4 py-3 text-gray-300 hover:bg-[#111827] hover:text-white">
-            <UsersIcon className="h-5 w-5 mr-3" />
-            Customers
-          </a>
-          <a href="#" className="flex items-center px-4 py-3 text-gray-300 hover:bg-[#111827] hover:text-white">
-            <ChartBar className="h-5 w-5 mr-3" />
-            Reports
-          </a>
-          <a href="#" className="flex items-center px-4 py-3 text-gray-300 hover:bg-[#111827] hover:text-white">
-            <SettingsIcon className="h-5 w-5 mr-3" />
-            Settings
-          </a>
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location === item.path;
+            return (
+              <Link key={item.path} href={item.path}>
+                <div 
+                  className={`flex items-center px-4 py-3 cursor-pointer ${
+                    isActive 
+                      ? "bg-[#111827] text-white border-l-4 border-[#3B82F6]" 
+                      : "text-gray-300 hover:bg-[#111827] hover:text-white"
+                  }`}
+                >
+                  <Icon className="h-5 w-5 mr-3" />
+                  {item.label}
+                </div>
+              </Link>
+            );
+          })}
         </nav>
         <div className="px-4 py-6 border-t border-[#374151]">
           <div className="flex items-center">
